@@ -34,6 +34,16 @@ export default function NewIssuePage() {
 
   const [error, seterror] = useState("");
   const [isSubmitting, setisSubmitting] = useState(false);
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setisSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setisSubmitting(false);
+      seterror("An unexpected error occured");
+    }
+  });
 
   return (
     <div className="max-w-xl">
@@ -42,19 +52,7 @@ export default function NewIssuePage() {
           <CalloutText>{error}</CalloutText>
         </CalloutRoot>
       )}
-      <form
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setisSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setisSubmitting(false);
-            seterror("An unexpected error occured");
-          }
-        })}
-        className="space-y-3"
-      >
+      <form onSubmit={onSubmit} className="space-y-3">
         <TextFieldRoot>
           <TextFieldInput placeholder="Title" {...register("title")} />
         </TextFieldRoot>
